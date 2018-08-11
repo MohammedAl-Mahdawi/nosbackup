@@ -1,0 +1,42 @@
+[
+    {
+        "type": "fileDownload",
+        "fileToDownload": "/daily/2018-01-02-0103/name_2018-01-02-0103.zip",
+        "fileToDownloadTo": "/home/mohammed/Documents/Tmp/20/name_2018-01-02-0103.zip"
+    },
+    {
+        "type": "filesDownload",
+        "folderToDownloadFrom": "/daily/2018-01-02-0103",
+        "folderToDownloadTo": "/home/mohammed/Documents/Tmp/21"
+    },
+    {
+        "type": "files",
+        "archive": true,
+        "path": "/media/mohammed/My Passport/Dropbox/my-files",
+        "name": "my-files"
+    },
+    {
+        "type": "files",
+        "archive": false,
+        "path": "/media/mohammed/My Passport/Dropbox/Pictures/"
+    },
+    {
+        "type": "file",
+        "path": "/media/mohammed/My Passport/Dropbox/Pictures/featured.jpg"
+    },
+    {
+        "type": "mySQL",
+        "DbName": "tajer",
+        "DbUser": "root",
+        "DbPassword": ""
+    },
+    {
+        "type": "mySQL",
+        "DbName": "NosBackupTest",
+        "DbUser": "root"
+    },
+    {
+        "type": "mongoDB",
+        "DbName": "nosbackup"
+    }
+]

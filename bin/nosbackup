@@ -1,0 +1,221 @@
+#!/usr/bin/env node
+const
+  fs = require('fs'),
+  path = require('path'),
+  resolve = path.resolve,
+  join = path.join,
+  program = require('commander'),
+  { prompt } = require('inquirer'),
+  inquirer = require('inquirer'),
+  chalk = require('chalk'),
+  schedule = require('node-schedule');
+
+
+
+const { destinationsBuilder } = require('../lib/destinations-builder')
+const { configBuilder } = require('../lib/config-builder')
+const { runBackup } = require('../lib/run-backup')
+
+function NosWriteFile(file, data) {
+  return new Promise((resolve, reject) => {
+    var wstream = fs.createWriteStream(file);
+
+    wstream.on('finish', function () {
+      resolve();
+    });
+
+    wstream.write(data);
+    wstream.end();
+  })
+}
+
+function isConfigExist() {
+  let dir = process.cwd()
+
+  if (fs.existsSync(join(dir, 'nosbackup.config.json'))) {
+    return dir
+  }
+
+  return false
+}
+
+function isDestinationsExist() {
+  let dir = process.cwd()
+
+  if (fs.existsSync(join(dir, 'nosbackup.destinations.json'))) {
+    return dir
+  }
+
+  return false
+}
+
+
+
+async function generateAndSaveConfig() {
+  var config = await configBuilder()
+  var writeConfigFile = await NosWriteFile(join(process.cwd(), 'nosbackup.config.json'), JSON.stringify(config, null, '\t'));
+  return config
+}
+
+async function generateAndSaveDest() {
+  var destinations = await destinationsBuilder()
+  var writeDestinationsFile = await NosWriteFile(join(process.cwd(), 'nosbackup.destinations.json'), JSON.stringify(destinations, null, '\t'));
+  return destinations
+}
+
+
+var askForConfigPermission = [
+  {
+    type: 'confirm',
+    name: 'askForOverwrite',
+    message: 'No configurations found, do you want to add them now (just hit enter for YES)?',
+    default: true
+  }
+];
+
+var askForDestPermission = [
+  {
+    type: 'confirm',
+    name: 'askForOverwrite',
+    message: 'No destinations found, do you want to add them now (just hit enter for YES)?',
+    default: true
+  }
+];
+
+async function run(now) {
+  try {
+    if (!isConfigExist()) {
+      var answers = await inquirer.prompt(askForConfigPermission)
+      if (answers.askForOverwrite) {
+        var config = await generateAndSaveConfig()
+      } else {
+        console.log(chalk.red(`Can't continue without the configurations!`))
+        process.exit()
+      }
+    } else {
+      var config = require(join(process.cwd(), 'nosbackup.config.json'))
+    }
+
+    if (!isDestinationsExist()) {
+      var answers = await inquirer.prompt(askForDestPermission)
+
+      if (answers.askForOverwrite) {
+        var destinations = await generateAndSaveDest()
+      } else {
+        console.log(chalk.red(`Can't continue without the destinations!`))
+        process.exit()
+      }
+    } else {
+      var destinations = require(join(process.cwd(), 'nosbackup.destinations.json'))
+    }
+
+
+    global.NosConfig = config
+    global.NosDestinations = destinations
+
+    /**
+     * Run the backup
+     */
+    if ( now ) {
+      runBackup(true)
+    } else {
+      var rule = new schedule.RecurrenceRule();
+      rule.hour = NosConfig.backupAtHour;
+      rule.minute = NosConfig.backupAtMinute;
+    
+      var j = schedule.scheduleJob(rule, function () {
+        runBackup()
+      });
+    }
+  } catch (error) {
+    console.log(chalk.red(error))
+  }
+}
+
+
+
+
+program
+  .version('1.0.0')
+  .description('PC/Server backup CLI app to backup to Dropbox using streams and chunks to handle big data.');
+
+program
+  .command('configurations')
+  .alias('c')
+  .description('Reset the configurations')
+  .action(
+    async () => {
+      try {
+        if (isConfigExist()) {
+          var askForPermission = [
+            {
+              type: 'confirm',
+              name: 'askForOverwrite',
+              message: 'The configurations file already exist! do you want to overwrite it (just hit enter for YES)?',
+              default: true
+            }
+          ];
+
+          var answers = await inquirer.prompt(askForPermission)
+          if (answers.askForOverwrite) {
+            var config = await generateAndSaveConfig()
+          }
+        } else {
+          var config = await generateAndSaveConfig()
+        }
+      } catch (error) {
+        console.log(chalk.red(error))
+      }
+    }
+  );
+
+program
+  .command('destinations')
+  .alias('d')
+  .description('Reset destinations')
+  .action(
+    async () => {
+      try {
+        if (isDestinationsExist()) {
+          var askForPermission = [
+            {
+              type: 'confirm',
+              name: 'askForOverwrite',
+              message: 'The destinations file already exist! do you want to overwrite it (just hit enter for YES)?',
+              default: true
+            }
+          ];
+
+          var answers = await inquirer.prompt(askForPermission)
+          if (answers.askForOverwrite) {
+            var destinations = await generateAndSaveDest()
+          }
+        } else {
+          var destinations = await generateAndSaveDest()
+        }
+
+      } catch (error) {
+        console.log(chalk.red(error))
+      }
+    }
+  );
+
+program
+  .command('backup [now]')
+  .alias('b')
+  .description('Backup, using the existing configurations and destinations, or create them if they are not exist.')
+  .action((now) => {
+    run(now)
+  });
+
+
+program.parse(process.argv);
+
+
+function make_red(txt) {
+  return chalk.red(txt);
+}
+
+if (!process.argv.slice(2).length) {
+  program.outputHelp(make_red);
+}
