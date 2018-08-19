@@ -45,9 +45,9 @@ npm install nosbackup -g
 ```
 
 
-<a name="usage"></a>
-
 ### How to use it?
+
+<a name="usage"></a>
 
 Go to an empty folder that you have permissions to write into it and run: 
 
@@ -67,7 +67,6 @@ NOSBackup currently able to create a daily, weekly, monthly and manually backups
 ### nosbackup.config.json
 
 <a name="nosbackup-config-json"></a>
-
 
 NOSBackup uses this file to save its configurations, here is a sample of this file:
 
@@ -229,18 +228,30 @@ or
 nosbackup --help
 ```
 
+### Questions
 
 <a name="questions"></a>
-
-### Questions
 
 **How to daemonized, monitor and keep NOSBackup alive forever.**
 
 There are a lot of tools, however you can use [PM2](https://github.com/Unitech/PM2/) to achieve that.
 1. First install PM2 by running `npm install pm2 -g`
-2. Run `pm2 start 'nosbackup b'` in the folder that you specified for NOSBackup(must have write permissions).
-3. To stop and delete it(undo the above) you can run `pm2 delete 'nosbackup b'`
+2. Create `ecosystem.config.js` file in the folder that you specified for NOSBackup(must have write permissions) with the following content:
 
+    ```
+    module.exports = {
+    apps: [{
+        name: 'NOSBackup',
+        script: 'nosbackup',
+        cwd: '/path/to/this/folder/',
+        args: 'b'
+    }]
+    };
+    ```
+    **Please replace `/path/to/this/folder/` with the folder path.**
+
+3. Run `pm2 start ecosystem.config.js` in the same folder.
+4. To stop and delete the process(undo the above step) you can run `pm2 delete NOSBackup`
 
 ## Support
 
@@ -250,11 +261,9 @@ This app is built to run on Linux PCs/servers, so please report an issue only if
 
 You are welcome to contribute code and provide pull requests for NOSBackup, also please feel free to suggest or request any features or enhancements.
 
-
-
 ## License
 
 <a name="license"></a>
 
 Copyright (c) 2018 [Mohammed Al-Mahdawi](https://al-mahdawi.com/)
-Licensed under the MIT license.
+Licensed under the **MIT** license.
