@@ -203,7 +203,7 @@ program
 program
   .command('backup [now]')
   .alias('b')
-  .description('Backup, using the existing configurations and destinations, or create them if they are not exist.')
+  .description('Backup, using the existing configurations and destinations, or create them if they do not exist.')
   .action((now) => {
     run(now)
   });
