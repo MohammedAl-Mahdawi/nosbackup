@@ -17,8 +17,7 @@ A CLI application that allows you to backup what you want and when you want from
 
 
 2.  [Support](#support)
-3.  [News](#news)
-4.  [License](#license)
+3.  [License](#license)
 
 
 ## [Documentation](#documentation)
