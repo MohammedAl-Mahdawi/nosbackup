@@ -256,7 +256,7 @@ There are a lot of tools, however, you can use [PM2](https://github.com/Unitech/
 
 <a name="support"></a>
 
-This app is built to run on Linux PCs/servers, so please report an issue only if you run a Linux based operating system, unfortunately, I will not be able to test it and reproduce the issue on the other platforms because I don't have them.
+This app built to run on Linux PCs/servers, so it may or may not work on your PC, please only report an issue if you run a Linux based operating system, unfortunately, I will not be able to test and reproduce the issue in order to fix it on the other platforms.
 
 You are welcome to contribute code and provide pull requests for NOSBackup, also please feel free to suggest or request any features or enhancements.
 
