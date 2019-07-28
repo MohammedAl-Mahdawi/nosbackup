@@ -1,6 +1,6 @@
 {
   "name": "nosbackup",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A CLI application that allows you to backup what you want and when you want from your PC/server to Dropbox, NOSBackup uses streams and chunks in order to handle big data.",
   "bin": "./bin/nosbackup",
   "author": {
