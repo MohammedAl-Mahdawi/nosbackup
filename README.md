@@ -1,5 +1,7 @@
 # NOSBackup
 
+> For more comprehensive solution please take a look at [ServerBackup](https://www.npmjs.com/package/server-backup)
+
 A CLI application that allows you to backup what you want and when you want from your PC/server to Dropbox, NOSBackup uses streams and chunks in order to handle big data.
 
 
