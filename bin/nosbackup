@@ -136,7 +136,7 @@ async function run(now) {
 
 
 program
-  .version('1.0.5')
+  .version('1.0.6')
   .description('PC/Server backup CLI app to backup to Dropbox using streams and chunks to handle big data.');
 
 program
