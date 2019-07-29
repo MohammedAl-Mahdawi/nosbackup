@@ -21,7 +21,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "archiver": "^2.1.0",
+    "archiver": "^3.0.3",
     "chalk": "^2.4.1",
     "commander": "^2.17.1",
     "dropbox-stream": "^2.0.0",
